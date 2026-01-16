@@ -16,11 +16,11 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.log('MongoDB connection error:', err));
 
 // Auth routes connect
-const authRoutes = require('./routes/auth');
+const authRoutes = require('../server/routes/auth');
 app.use('/api/auth', authRoutes);
 
 // Trainers routes connect kar rahe hain
-const trainersRoutes = require('./routes/trainers');
+const trainersRoutes = require('../server/routes/trainers');
 app.use('/api/trainers', trainersRoutes);
 
 // Test route
