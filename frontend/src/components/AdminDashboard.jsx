@@ -17,7 +17,7 @@ function AdminDashboard() {
   useEffect(() => {
     const fetchTrainers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/trainers');
+        const response = await axios.get('https://fittrack-backend-sqno.onrender.com/api/trainers');
         setTrainers(response.data);
       } catch (err) {
         console.log('Error fetching trainers:', err);
@@ -30,7 +30,7 @@ function AdminDashboard() {
   const handleAddTrainer = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/trainers', newTrainer);
+      const response = await axios.post('https://fittrack-backend-sqno.onrender.com/api/trainers', newTrainer);
       setTrainers([...trainers, response.data]);
       setNewTrainer({ name: '', email: '', role: 'Trainer' });
       setShowModal(false);
@@ -44,7 +44,7 @@ function AdminDashboard() {
     if (!sure) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/trainers/${id}`);
+      await axios.delete(`https://fittrack-backend-sqno.onrender.com/api/trainers/${id}`);
       setTrainers(trainers.filter(trainer => trainer._id !== id));
     } catch (err) {
       console.log('Error deleting trainer:', err);
@@ -59,7 +59,7 @@ function AdminDashboard() {
   const handleUpdateTrainer = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`http://localhost:5000/api/trainers/${editingTrainer._id}`, editingTrainer);
+      const response = await axios.put(`https://fittrack-backend-sqno.onrender.com/api/trainers/${editingTrainer._id}`, editingTrainer);
       setTrainers(trainers.map(t => t._id === editingTrainer._id ? response.data : t));
       setEditModal(false);
       setEditingTrainer(null);
@@ -95,7 +95,7 @@ function AdminDashboard() {
         </div>
       </aside>
 
-      {/* Main Content – push down on mobile, shift right on desktop */}
+      {/* Main Content */}
       <main className="p-4 sm:p-6 md:p-10 md:ml-0 lg:ml-64">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Admin Dashboard</h1>
 
@@ -106,7 +106,6 @@ function AdminDashboard() {
             <p className="text-2xl sm:text-3xl">1,234</p>
             <p className="text-green-400 text-sm">+12% this month</p>
           </div>
-          {/* Other stats cards same */}
           <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow">
             <h3 className="text-base sm:text-lg font-semibold">Active Users</h3>
             <p className="text-2xl sm:text-3xl">456</p>
@@ -177,8 +176,126 @@ function AdminDashboard() {
         </div>
       </main>
 
-      {/* Modals – already good, no change needed */}
-      {/* ... keep your modal code as is ... */}
+      {/* Add Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-xl sm:text-2xl font-bold mb-6 text-white">Add New Trainer</h3>
+            
+            <form onSubmit={handleAddTrainer}>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-2 text-sm sm:text-base">Name</label>
+                <input 
+                  type="text"
+                  value={newTrainer.name}
+                  onChange={(e) => setNewTrainer({ ...newTrainer, name: e.target.value })}
+                  className="w-full p-3 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm sm:text-base" 
+                  placeholder="Full Name" 
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-2 text-sm sm:text-base">Email</label>
+                <input 
+                  type="email"
+                  value={newTrainer.email}
+                  onChange={(e) => setNewTrainer({ ...newTrainer, email: e.target.value })}
+                  className="w-full p-3 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm sm:text-base" 
+                  placeholder="trainer@fittrack.com" 
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-2 text-sm sm:text-base">Role</label>
+                <input 
+                  type="text"
+                  value={newTrainer.role}
+                  onChange={(e) => setNewTrainer({ ...newTrainer, role: e.target.value })}
+                  className="w-full p-3 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm sm:text-base" 
+                  placeholder="Trainer" 
+                  required
+                />
+              </div>
+              
+              <div className="flex flex-col sm:flex-row justify-end gap-4">
+                <button 
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white text-sm sm:text-base"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white text-sm sm:text-base"
+                >
+                  Add Trainer
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editModal && editingTrainer && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-xl sm:text-2xl font-bold mb-6 text-white">Edit Trainer</h3>
+            
+            <form onSubmit={handleUpdateTrainer}>
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-2 text-sm sm:text-base">Name</label>
+                <input 
+                  type="text"
+                  value={editingTrainer.name}
+                  onChange={(e) => setEditingTrainer({ ...editingTrainer, name: e.target.value })}
+                  className="w-full p-3 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm sm:text-base" 
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-2 text-sm sm:text-base">Email</label>
+                <input 
+                  type="email"
+                  value={editingTrainer.email}
+                  onChange={(e) => setEditingTrainer({ ...editingTrainer, email: e.target.value })}
+                  className="w-full p-3 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm sm:text-base" 
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-2 text-sm sm:text-base">Role</label>
+                <input 
+                  type="text"
+                  value={editingTrainer.role}
+                  onChange={(e) => setEditingTrainer({ ...editingTrainer, role: e.target.value })}
+                  className="w-full p-3 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm sm:text-base" 
+                  required
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-end gap-4">
+                <button 
+                  type="button"
+                  onClick={() => setEditModal(false)}
+                  className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white text-sm sm:text-base"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white text-sm sm:text-base"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
