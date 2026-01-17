@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors());  // ← allow all
 app.use(express.json());
 
 // MongoDB connect
@@ -15,11 +15,11 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => console.log('MongoDB connection error:', err));
 
-// Auth routes connect
+// Auth routes
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
-// Trainers routes connect kar rahe hain
+// Trainers routes
 const trainersRoutes = require('./routes/trainers');
 app.use('/api/trainers', trainersRoutes);
 
@@ -32,4 +32,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-
